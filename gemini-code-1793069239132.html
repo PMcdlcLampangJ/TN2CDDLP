@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>แบบสำรวจความคิดเห็น</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      max-width: 500px;
+      margin: 40px auto;
+      padding: 20px;
+      background-color: #f7f9fa;
+    }
+    .form-card {
+      background: #ffffff;
+      padding: 25px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: bold;
+    }
+    input[type="text"], select, textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    button {
+      width: 100%;
+      background-color: #2da44e;
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #2c974b;
+    }
+    #status-msg {
+      margin-top: 15px;
+      text-align: center;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+<div class="form-card">
+  <h2>แบบสำรวจความคิดเห็น</h2>
+  
+  <form id="survey-form">
+    <div class="form-group">
+      <label for="name">ชื่อผู้ตอบ:</label>
+      <!-- เปลี่ยน name เป็น entry.XXXXXX ที่ได้จาก Google Forms -->
+      <input type="text" id="name" name="entry.123456789" required>
+    </div>
+
+    <div class="form-group">
+      <label for="satisfaction">ระดับความพึงพอใจ:</label>
+      <select id="satisfaction" name="entry.987654321">
+        <option value="ดีมาก">ดีมาก</option>
+        <option value="ปานกลาง">ปานกลาง</option>
+        <option value="ควรปรับปรุง">ควรปรับปรุง</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="comment">ข้อเสนอแนะเพิ่มเติม:</label>
+      <textarea id="comment" name="entry.555555555" rows="4"></textarea>
+    </div>
+
+    <button type="submit">ส่งแบบสำรวจ</button>
+  </form>
+
+  <div id="status-msg"></div>
+</div>
+
+<script>
+  const form = document.getElementById('survey-form');
+  const statusMsg = document.getElementById('status-msg');
+
+  // ใส่ URL formResponse จาก Google Forms ของคุณ
+  const FORM_ACTION_URL = 'https://docs.google.com/forms/d/e/YOUR_FORM_ID/formResponse';
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    statusMsg.innerText = 'กำลังส่งข้อมูล...';
+
+    const formData = new FormData(form);
+
+    try {
+      // ใช้ mode: 'no-cors' เพื่อเลี่ยงข้อจำกัด CORS ของ Google Form
+      await fetch(FORM_ACTION_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        body: formData
+      });
+
+      statusMsg.style.color = '#2da44e';
+      statusMsg.innerText = 'ขอบคุณสำหรับการตอบแบบสำรวจ!';
+      form.reset();
+    } catch (err) {
+      statusMsg.style.color = '#cf222e';
+      statusMsg.innerText = 'เกิดข้อผิดพลาดในการส่ง กรุณาลองใหม่อีกครั้ง';
+    }
+  });
+</script>
+
+</body>
+</html>
